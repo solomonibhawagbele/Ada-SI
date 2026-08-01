@@ -290,7 +290,7 @@ def resolve_reasoning_effort(
     normalized = normalize_reasoning_effort(value)
     if normalized is not None:
         return normalized
-    fallback = default or LITE_MODEL_REASONING_EFFORT or "low"
+    fallback = default or LITE_MODEL_REASONING_EFFORT
     return normalize_reasoning_effort(fallback) or fallback
 
 
@@ -1099,7 +1099,7 @@ async def get_config() -> dict:
         "tools": await alist_tool_summaries(),
         "tool_runtime_available": (await runtime_health())[0],
         "tool_runtime_url": TOOL_RUNTIME_URL,
-        "lite_model_reasoning_effort": LITE_MODEL_REASONING_EFFORT or "low",
+        "lite_model_reasoning_effort": LITE_MODEL_REASONING_EFFORT,
         "tool_creator_reasoning_effort": TOOL_CREATOR_REASONING_EFFORT,
     }
 

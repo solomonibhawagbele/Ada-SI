@@ -105,7 +105,8 @@ async def run_heartbeat_tick(
                         model=model,
                         messages=working,
                         tools=tools,
-                        tool_choice="auto",
+                        stream=False,
+                        
                         reasoning_effort=reasoning_effort,
                     )
                     resp = await client.post(

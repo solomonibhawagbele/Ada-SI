@@ -192,6 +192,8 @@ def build_completion_payload(
         effort = None
     elif effort is None and is_gemini_model(model):
         effort = "low"
+    if "ollama" in model.lower():
+        effort = None
     if effort:
         payload["reasoning_effort"] = effort
     return payload
