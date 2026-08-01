@@ -1,1 +1,11 @@
-{"name":"Ada-SI","forwardPorts":[8080],"portsAttributes":{"8080":{"label":"Ada Chat","onAutoForward":"openBrowser"}}}
+{
+  "name": "Ada-SI",
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": {
+      "label": "Ada Chat",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh"
+}
