@@ -20,7 +20,7 @@ cat > .env << 'ENVEOF'
 LITELLM_MASTER_KEY=sk-ada-local-key
 OPENCODE_API_KEY=sk-Dzx12O2e2Aev6AWbdHXIjDTnvG1ciHh9eTXAOPfYMdkrkINP1zLdunmdM0z1q4NH
 LITE_MODEL=openai/mimo-v2.5-free
-TOOL_CREATOR_MODEL=openai/gpt-5.4-mini
+TOOL_CREATOR_MODEL=openai/deepseek-v4-flash-free
 LITELLM_URL=http://127.0.0.1:4000
 TOOL_RUNTIME_URL=http://127.0.0.1:8090
 TOOLS_DIR=chat/custom_tools
