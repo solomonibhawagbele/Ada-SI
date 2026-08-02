@@ -94,6 +94,14 @@ from scout_persona import (
     start_bootstrap_ritual,
     write_persona_markdown,
 )
+from harness import (
+    ensure_harness,
+    harness_api_response,
+    harness_status_response,
+    read_harness,
+    reset_harness_to_template,
+    write_harness,
+)
 from litellm_client import (
     SSE_HEADERS,
     ThinkStreamParser,
@@ -154,6 +162,7 @@ from tools_engine import (
     write_tool_files,
 )
 from tool_build_stream import stream_tool_build
+from memory_service import save_conversation, retrieve_context
 
 configure_logging()
 logger = logging.getLogger(__name__)
@@ -1184,6 +1193,35 @@ async def update_persona_config(payload: dict = Body(...)) -> dict:
     return persona_api_response()
 
 
+@app.get("/api/harness")
+async def get_harness() -> dict:
+    return harness_api_response()
+
+
+@app.get("/api/harness/status")
+async def get_harness_status() -> dict:
+    return harness_status_response()
+
+
+@app.put("/api/harness")
+async def update_harness(payload: dict = Body(...)) -> dict:
+    if not isinstance(payload, dict):
+        raise HTTPException(status_code=400, detail="Request body must be a JSON object.")
+    content = payload.get("content")
+    if not isinstance(content, str):
+        raise HTTPException(status_code=400, detail="content must be a string.")
+    result = write_harness(content)
+    if not result.get("ok"):
+        raise HTTPException(status_code=400, detail=result.get("error", "harness write failed"))
+    return harness_api_response()
+
+
+@app.post("/api/harness/reset")
+async def reset_harness() -> dict:
+    reset_harness_to_template()
+    return harness_api_response()
+
+
 @app.get("/api/secrets")
 async def get_secrets() -> dict:
     return {"secrets": secrets_status_response()}
@@ -1503,6 +1541,19 @@ async def chat(request: Request) -> StreamingResponse:
     elif not isinstance(messages, list) or not messages:
         raise HTTPException(status_code=400, detail="messages must be a non-empty list.")
 
+    # Retrieve relevant context from past conversations
+    if messages and len(messages) > 0:
+        last_user_msg = ""
+        for msg in reversed(messages):
+            if msg.get("role") == "user":
+                last_user_msg = msg.get("content", "")
+                break
+        
+        if last_user_msg:
+            context = retrieve_context(last_user_msg)
+            if context:
+                messages = [{"role": "system", "content": context}] + messages
+
     async def event_stream():
         async for chunk in stream_agent_sse(
             run_id=run_id,
@@ -1516,11 +1567,29 @@ async def chat(request: Request) -> StreamingResponse:
             tts_enabled=tts_enabled,
         ):
             yield chunk
+        
+        # Save conversation to memory after streaming completes
+        try:
+            save_conversation(messages)
+        except Exception:
+            pass  # Don't let memory save fail the response
 
     return StreamingResponse(
         event_stream(), media_type="text/event-stream", headers=SSE_HEADERS
     )
 
+
+
+@app.get("/api/memory/stats")
+async def memory_stats():
+    from memory_service import get_memory_stats
+    return get_memory_stats()
+
+@app.get("/api/memory/context")
+async def memory_context(q: str = ""):
+    from memory_service import retrieve_context
+    if not q: return {"context": ""}
+    return {"context": retrieve_context(q)}
 
 async def stream_agent_sse(
     *,
@@ -1682,6 +1751,12 @@ async def resume_scout(request: Request, payload: dict = Body(...)) -> Streaming
             tts_enabled=tts_enabled,
         ):
             yield chunk
+        
+        # Save conversation to memory after streaming completes
+        try:
+            save_conversation(messages)
+        except Exception:
+            pass  # Don't let memory save fail the response
 
     return StreamingResponse(
         event_stream(), media_type="text/event-stream", headers=SSE_HEADERS
@@ -2026,6 +2101,12 @@ async def forge_batch_resume_agent(request: Request, payload: dict = Body(...)) 
             tts_enabled=tts_enabled,
         ):
             yield chunk
+        
+        # Save conversation to memory after streaming completes
+        try:
+            save_conversation(messages)
+        except Exception:
+            pass  # Don't let memory save fail the response
 
     return StreamingResponse(resume_stream(), media_type="text/event-stream", headers=SSE_HEADERS)
 

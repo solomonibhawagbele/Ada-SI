@@ -1,8 +1,9 @@
 {
   "approved_packages": [
     "comtypes; sys_platform == 'win32'",
-    "pycaw; sys_platform == 'win32'",
+    "duckduckgo-search",
+    "gTTS>=2.5.0",
     "playwright",
-    "duckduckgo-search"
+    "pycaw; sys_platform == 'win32'"
   ]
 }

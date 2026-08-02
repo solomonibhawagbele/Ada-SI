@@ -53,7 +53,11 @@ def sanitize_json_schema_for_vertex(value: Any) -> Any:
 
 
 def sanitize_tools_for_model(tools: list[dict] | None, model: str) -> list[dict] | None:
-    if tools is None or not is_gemini_model(model):
+    if tools is None:
+        return None
+    if is_tool_incapable_model(model):
+        return None
+    if not is_gemini_model(model):
         return tools
     sanitized: list[dict] = []
     for tool in tools:
@@ -68,6 +72,21 @@ def sanitize_tools_for_model(tools: list[dict] | None, model: str) -> list[dict]
 
 def is_gemini_model(model: str) -> bool:
     return model.startswith("gemini/") or model.startswith("gemini/*")
+
+
+def is_tool_incapable_model(model: str) -> bool:
+    """True for models whose endpoints do not support function calling.
+
+    Uncensored OpenRouter models (e.g. Hermes, Dolphin, Magnum) are served by
+    providers that expose no tool-calling endpoint, so Ada must strip the
+    `tools` parameter to avoid 404/errors. They keep plain chat, memory, and
+    persona behavior; tool-forging is delegated to the tool creator model.
+    """
+    m = (model or "").lower()
+    if m.startswith("openrouter/"):
+        if any(tag in m for tag in ("hermes", "dolphin", "magnum", "abaiser", "midnight", "miqu")):
+            return True
+    return False
 
 
 def merge_search_sources(

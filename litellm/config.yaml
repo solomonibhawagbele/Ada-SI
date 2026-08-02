@@ -4,21 +4,53 @@ model_list:
       model: openai/mimo-v2.5-free
       api_key: os.environ/OPENCODE_API_KEY
       api_base: https://opencode.ai/zen/v1
-  - model_name: openai/gpt-5.4-mini
-    litellm_params:
-      model: openai/gpt-5.4-mini
-      api_key: os.environ/OPENCODE_API_KEY
-      api_base: https://opencode.ai/zen/v1
-  - model_name: openai/gpt-5-nano
-    litellm_params:
-      model: openai/gpt-5-nano
-      api_key: os.environ/OPENCODE_API_KEY
-      api_base: https://opencode.ai/zen/v1
   - model_name: openai/deepseek-v4-flash-free
     litellm_params:
       model: openai/deepseek-v4-flash-free
       api_key: os.environ/OPENCODE_API_KEY
       api_base: https://opencode.ai/zen/v1
+  - model_name: nvidia/nemotron-3-super-120b-a12b
+    litellm_params:
+      model: openai/nvidia/nemotron-3-super-120b-a12b
+      api_key: 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
+      api_base: https://integrate.api.nvidia.com/v1
+  - model_name: nvidia/nemotron-3-nano-30b-a3b
+    litellm_params:
+      model: openai/nvidia/nemotron-3-nano-30b-a3b
+      api_key: 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
+      api_base: https://integrate.api.nvidia.com/v1
+  - model_name: openrouter/hermes-4-70b
+    litellm_params:
+      model: openrouter/nousresearch/hermes-4-70b
+      api_key: os.environ/OPENROUTER_API_KEY
+  - model_name: openrouter/hermes-4-405b
+    litellm_params:
+      model: openrouter/nousresearch/hermes-4-405b
+      api_key: os.environ/OPENROUTER_API_KEY
+  - model_name: openrouter/hermes-3-70b
+    litellm_params:
+      model: openrouter/nousresearch/hermes-3-llama-3.1-70b
+      api_key: os.environ/OPENROUTER_API_KEY
+  - model_name: openrouter/hermes-3-405b
+    litellm_params:
+      model: openrouter/nousresearch/hermes-3-llama-3.1-405b
+      api_key: os.environ/OPENROUTER_API_KEY
+  - model_name: openrouter/glm-5.2
+    litellm_params:
+      model: openrouter/z-ai/glm-5.2
+      api_key: os.environ/OPENROUTER_API_KEY
+  - model_name: openrouter/qwen3.7-max
+    litellm_params:
+      model: openrouter/qwen/qwen3.7-max
+      api_key: os.environ/OPENROUTER_API_KEY
+  - model_name: openrouter/deepseek-v3
+    litellm_params:
+      model: openrouter/deepseek/deepseek-chat-v3-0324
+      api_key: os.environ/OPENROUTER_API_KEY
+  - model_name: openrouter/llama-3.3-70b
+    litellm_params:
+      model: openrouter/meta-llama/llama-3.3-70b-instruct
+      api_key: os.environ/OPENROUTER_API_KEY
 
 litellm_settings:
   drop_params: true

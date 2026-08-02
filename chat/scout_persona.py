@@ -9,6 +9,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
 
+from harness import build_harness_block, ensure_harness, harness_api_response, read_harness
+
 PersonaFileName = Literal[
     "soul", "identity", "user", "tools", "memory", "heartbeat", "agents"
 ]
@@ -430,7 +432,9 @@ def build_scout_system_instruction(
 ) -> str:
     """Compose Scout system instruction from routing stub + persona files."""
     ensure_persona_layout()
+    ensure_harness()
     memory = read_memory_for_prompt()
+    harness_block = build_harness_block()
 
     if for_heartbeat_maintenance:
         parts = [
@@ -444,6 +448,8 @@ def build_scout_system_instruction(
             "Call memory_replace with the full updated MEMORY.md body when daily logs require changes. "
             "Skip the tool if MEMORY is already accurate.",
         ]
+        if harness_block:
+            parts.insert(0, harness_block)
         return "\n\n".join(parts)
 
     agents = read_persona_markdown("agents")
@@ -474,6 +480,8 @@ def build_scout_system_instruction(
         "Do not call it every turn—only when MEMORY should change. "
         "Keep MEMORY.md organized; preserve important prior facts unless obsolete.",
     ]
+    if harness_block:
+        parts.insert(0, harness_block)
     if bootstrap.strip():
         parts.append("=== BOOTSTRAP ===\n" + bootstrap.strip())
 
@@ -637,6 +645,7 @@ def parse_identity_display_name(*, default: str = DEFAULT_DISPLAY_NAME) -> str:
 
 def persona_api_response() -> dict[str, Any]:
     ensure_persona_layout()
+    ensure_harness()
     files: dict[str, str] = {}
     for key in _FILE_MAP:
         files[key] = read_persona_markdown(key)
@@ -648,6 +657,7 @@ def persona_api_response() -> dict[str, Any]:
         "bootstrap_present": status["bootstrap_present"],
         "persona_dir": status["persona_dir"],
         "display_name": parse_identity_display_name(),
+        "harness": read_harness(),
     }
 
 
