@@ -973,7 +973,10 @@ def _load_local_schemas() -> list[dict]:
                 file.read_text(encoding="utf-8"), file.stem
             )
             if hasattr(mod, "get_tool_schema"):
-                schemas.append(mod.get_tool_schema())
+                s = mod.get_tool_schema()
+                if "type" not in s and "function" not in s:
+                    s = {"type": "function", "function": s}
+                schemas.append(s)
         except Exception as exc:
             logger.warning("Local schema load failed for %s: %s", file.name, exc)
     return schemas

@@ -113,6 +113,7 @@ Respond with ONLY valid JSON (no markdown fences) in this shape:
 Headless test rules:
 - Mock network, subprocess, or TTS engine calls with unittest.mock.patch when live I/O is undesirable
 - Do NOT use interactive skill_data persistence patterns
+- When testing schema in test_code, use: fn = schema.get("function", schema); fn["name"] ... This handles both wrapped {"type":"function","function":{...}} and flat {"name":...} formats
 
 """ + _COMMON_CODEGEN_RULES
 

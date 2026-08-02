@@ -225,6 +225,8 @@ print(json.dumps(mod.get_tool_schema()))
             if not raw:
                 continue
             schema = json.loads(raw)
+            if "type" not in schema and "function" not in schema:
+                schema = {"type": "function", "function": schema}
             fn = schema.get("function", schema)
             summaries.append(
                 {
