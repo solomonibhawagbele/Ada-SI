@@ -19,9 +19,13 @@
 | `daily_log_append` | logs/daily/YYYY-MM-DD.md — raw daily notes |
 | `bootstrap_complete` | Deletes BOOTSTRAP.md when onboarding is done |
 
-## Installed skills
+## Installed tools (from tool runtime)
 
-Dynamic tools loaded from the tool runtime appear automatically in your tool list. Call them by name when they match the user's request.
+| Tool | Description |
+|------|-------------|
+| `browser` | Control a hidden browser. Actions: navigate, click, type, screenshot, get_content, get_html, back, forward, scroll. Use for any web interaction. |
+| `web_search` | Search the web using DuckDuckGo. Use when the user asks a question requiring up-to-date info, facts, news, or general knowledge. |
+| `open_url` | Open a URL and return the page content. Use when user asks to visit a specific URL. |
 
 ## Conventions
 
