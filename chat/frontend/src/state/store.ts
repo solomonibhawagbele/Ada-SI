@@ -48,7 +48,7 @@ import {
   type XpSource,
 } from './progression'
 
-type SidePanelTab = 'tools' | 'packages'
+type SidePanelTab = 'tools' | 'packages' | 'actions'
 
 type PromptsSaveState =
   | { status: 'idle' }

@@ -1,165 +1,165 @@
-import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from react
-import { MAX_TEXTAREA_ROWS } from ../../constants
-import { useChatStream } from ../../hooks/useChatStream
-import { useSpeechRecognition } from ../../hooks/useSpeechRecognition
-import { useAppStore } from ../../state/store
+import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { MAX_TEXTAREA_ROWS } from "../../constants";
+import { useChatStream } from "../../hooks/useChatStream";
+import { useSpeechRecognition } from "../../hooks/useSpeechRecognition";
+import { useAppStore } from "../../state/store";
 
-const DEFAULT_PLACEHOLDER = Send a message to ADA...
-const LISTENING_PLACEHOLDER = Listening...
+const DEFAULT_PLACEHOLDER = "Send a message to ADA...";
+const LISTENING_PLACEHOLDER = "Listening...";
 
 const SLASH_COMMANDS = [
-  { name: /build, description: Forge a new tool },
-  { name: /memory, description: Search my memory },
-  { name: /help, description: Show available commands },
-  { name: /status, description: Check system status },
-  { name: /shell, description: Run a command },
-  { name: /browser, description: Open web browser },
-  { name: /search, description: Search the web },
-  { name: /trajectory, description: Export session data },
-  { name: /compress, description: Summarize conversation },
-  { name: /skills, description: Browse community skills },
-]
+  { name: "/build", description: "Forge a new tool" },
+  { name: "/memory", description: "Search my memory" },
+  { name: "/help", description: "Show available commands" },
+  { name: "/status", description: "Check system status" },
+  { name: "/shell", description: "Run a command" },
+  { name: "/browser", description: "Open web browser" },
+  { name: "/search", description: "Search the web" },
+  { name: "/trajectory", description: "Export session data" },
+  { name: "/compress", description: "Summarize conversation" },
+  { name: "/skills", description: "Browse community skills" },
+];
 
 export function Composer() {
-  const [input, setInput] = useState()
-  const [showSlashMenu, setShowSlashMenu] = useState(false)
-  const [filteredCommands, setFilteredCommands] = useState(SLASH_COMMANDS)
-  const [selectedCommandIndex, setSelectedCommandIndex] = useState(0)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const slashMenuRef = useRef<HTMLDivElement>(null)
-  const prefixRef = useRef()
-  const isSending = useAppStore((s) => s.isSending)
-  const status = useAppStore((s) => s.status)
-  const statusIsError = useAppStore((s) => s.statusIsError)
-  const personaBootstrapActive = useAppStore((s) => s.personaBootstrapActive)
-  const openSettings = useAppStore((s) => s.openSettings)
-  const setStatus = useAppStore((s) => s.setStatus)
-  const { sendMessage, stopGeneration } = useChatStream()
-  const speech = useSpeechRecognition()
+  const [input, setInput] = useState("");
+  const [showSlashMenu, setShowSlashMenu] = useState(false);
+  const [filteredCommands, setFilteredCommands] = useState(SLASH_COMMANDS);
+  const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const slashMenuRef = useRef<HTMLDivElement>(null);
+  const prefixRef = useRef("");
+  const isSending = useAppStore((s) => s.isSending);
+  const status = useAppStore((s) => s.status);
+  const statusIsError = useAppStore((s) => s.statusIsError);
+  const personaBootstrapActive = useAppStore((s) => s.personaBootstrapActive);
+  const openSettings = useAppStore((s) => s.openSettings);
+  const setStatus = useAppStore((s) => s.setStatus);
+  const { sendMessage, stopGeneration } = useChatStream();
+  const speech = useSpeechRecognition();
 
   const autoResize = () => {
-    const el = textareaRef.current
-    if (!el) return
-    el.style.height = auto
-    const lineHeight = parseFloat(getComputedStyle(el).lineHeight) || 22
-    const maxHeight = lineHeight * MAX_TEXTAREA_ROWS
-    el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`
-  }
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    const lineHeight = parseFloat(getComputedStyle(el).lineHeight) || 22;
+    const maxHeight = lineHeight * MAX_TEXTAREA_ROWS;
+    el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`;
+  };
 
   const resetTextarea = () => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = auto
-      textareaRef.current.rows = 1
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.rows = 1;
     }
-  }
+  };
 
   const submitContent = async (content: string) => {
-    if (isSending) return
-    const trimmed = content.trim()
-    if (!trimmed) return
-    setInput()
-    resetTextarea()
-    setShowSlashMenu(false)
-    await sendMessage(trimmed)
-    textareaRef.current?.focus()
-  }
+    if (isSending) return;
+    const trimmed = content.trim();
+    if (!trimmed) return;
+    setInput("");
+    resetTextarea();
+    setShowSlashMenu(false);
+    await sendMessage(trimmed);
+    textareaRef.current?.focus();
+  };
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
-    await submitContent(input)
-  }
+    e.preventDefault();
+    await submitContent(input);
+  };
 
   const handleSlashCommandSelect = async (command: string) => {
-    await submitContent(command)
-  }
+    await submitContent(command);
+  };
 
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (showSlashMenu) {
-      if (e.key === ArrowDown) {
-        e.preventDefault()
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
         setSelectedCommandIndex((prev) => 
           prev < filteredCommands.length - 1 ? prev + 1 : 0
-        )
-      } else if (e.key === ArrowUp) {
-        e.preventDefault()
+        );
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
         setSelectedCommandIndex((prev) => 
           prev > 0 ? prev - 1 : filteredCommands.length - 1
-        )
-      } else if (e.key === Enter && filteredCommands.length > 0) {
-        e.preventDefault()
-        handleSlashCommandSelect(filteredCommands[selectedCommandIndex].name)
-      } else if (e.key === Escape) {
-        setShowSlashMenu(false)
+        );
+      } else if (e.key === "Enter" && filteredCommands.length > 0) {
+        e.preventDefault();
+        handleSlashCommandSelect(filteredCommands[selectedCommandIndex].name);
+      } else if (e.key === "Escape") {
+        setShowSlashMenu(false);
       }
-      return
+      return;
     }
 
-    if (e.key === Enter && !e.shiftKey) {
-      e.preventDefault()
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
       if (!isSending && !speech.isListening) {
-        void handleSubmit(e as unknown as FormEvent)
+        handleSubmit(e);
       }
     }
-  }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (speech.isListening) return
-    const value = e.target.value
-    setInput(value)
+    if (speech.isListening) return;
+    const value = e.target.value;
+    setInput(value);
 
-    if (value.startsWith(/)) {
-      const query = value.toLowerCase()
+    if (value.startsWith("/")) {
+      const query = value.toLowerCase();
       const filtered = SLASH_COMMANDS.filter(cmd => 
         cmd.name.toLowerCase().includes(query) || 
         cmd.description.toLowerCase().includes(query)
-      )
-      setFilteredCommands(filtered)
-      setSelectedCommandIndex(0)
-      setShowSlashMenu(filtered.length > 0)
+      );
+      setFilteredCommands(filtered);
+      setSelectedCommandIndex(0);
+      setShowSlashMenu(filtered.length > 0);
     } else {
-      setShowSlashMenu(false)
+      setShowSlashMenu(false);
     }
 
-    autoResize()
-  }
+    autoResize();
+  };
 
   useEffect(() => {
-    if (!speech.isListening) return
-    const combined = prefixRef.current + speech.transcript
-    setInput(combined)
-    requestAnimationFrame(autoResize)
-  }, [speech.isListening, speech.transcript])
+    if (!speech.isListening) return;
+    const combined = prefixRef.current + speech.transcript;
+    setInput(combined);
+    requestAnimationFrame(autoResize);
+  }, [speech.isListening, speech.transcript]);
 
   useEffect(() => {
-    if (!speech.error) return
-    setStatus(speech.error, true)
-  }, [speech.error, setStatus])
+    if (!speech.error) return;
+    setStatus(speech.error, true);
+  }, [speech.error, setStatus]);
 
   const toggleMic = () => {
-    if (isSending) return
+    if (isSending) return;
 
     if (speech.isListening) {
       speech.stop({
-        onEnd: (transcript) => {
-          const content = (prefixRef.current + transcript).trim()
-          prefixRef.current = 
+        onEnd: (transcript: string) => {
+          const content = (prefixRef.current + transcript).trim();
+          prefixRef.current = "";
           if (!content) {
-            setInput()
-            resetTextarea()
-            setStatus(No speech detected., true)
-            return
+            setInput("");
+            resetTextarea();
+            setStatus("No speech detected.", true);
+            return;
           }
-          void submitContent(content)
+          submitContent(content);
         },
-      })
-      return
+      });
+      return;
     }
 
-    prefixRef.current = input
-    speech.start()
-  }
+    prefixRef.current = input;
+    speech.start();
+  };
 
-  const placeholder = speech.isListening ? LISTENING_PLACEHOLDER : DEFAULT_PLACEHOLDER
+  const placeholder = speech.isListening ? LISTENING_PLACEHOLDER : DEFAULT_PLACEHOLDER;
 
   return (
     <footer className="composer">
@@ -175,7 +175,7 @@ export function Composer() {
             <button
               key={cmd.name}
               type="button"
-              className={`slash-menu-item${index === selectedCommandIndex ?  selected : }`}
+              className={`slash-menu-item${index === selectedCommandIndex ? " selected" : ""}`}
               onClick={() => handleSlashCommandSelect(cmd.name)}
             >
               <span className="slash-menu-name">{cmd.name}</span>
@@ -200,9 +200,9 @@ export function Composer() {
           {speech.isSupported && (
             <button
               type="button"
-              className={`btn-mic${speech.isListening ?  recording : }`}
-              title={speech.isListening ? Stop and send : Start voice input}
-              aria-label={speech.isListening ? Stop recording and send : Start voice input}
+              className={`btn-mic${speech.isListening ? " recording" : ""}`}
+              title={speech.isListening ? "Stop and send" : "Start voice input"}
+              aria-label={speech.isListening ? "Stop recording and send" : "Start voice input"}
               aria-pressed={speech.isListening}
               disabled={isSending}
               onClick={toggleMic}
@@ -224,7 +224,7 @@ export function Composer() {
         </div>
         <button
           type="submit"
-          className={`btn-send${isSending ?  hidden : }`}
+          className={`btn-send${isSending ? " hidden" : ""}`}
           title="Launch message"
           aria-label="Launch message"
           disabled={isSending || speech.isListening}
@@ -235,7 +235,7 @@ export function Composer() {
         </button>
         <button
           type="button"
-          className={`btn-stop-round${isSending ?  :  hidden}`}
+          className={`btn-stop-round${isSending ? "" : " hidden"}`}
           title="Halt response"
           aria-label="Halt response"
           onClick={stopGeneration}
@@ -246,17 +246,17 @@ export function Composer() {
         </button>
       </form>
       <div className="composer-status-row">
-        <p className={`status${statusIsError ?  error : }`}>{status}</p>
-        {statusIsError && status.toLowerCase().includes(api key) ? (
+        <p className={`status${statusIsError ? " error" : ""}`}>{status}</p>
+        {statusIsError && status.toLowerCase().includes("api key") ? (
           <button
             type="button"
             className="btn-secondary btn-sm composer-api-keys-btn"
-            onClick={() => openSettings(api-keys)}
+            onClick={() => openSettings("api-keys")}
           >
             Open API keys
           </button>
         ) : null}
       </div>
     </footer>
-  )
+  );
 }
