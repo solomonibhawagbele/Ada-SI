@@ -1,16 +1,18 @@
-import { useAppStore } from '../../state/store'
-import { ProcessPanel } from '../process/ProcessPanel'
-import { SidePanel } from '../sidebar/SidePanel'
-import { ModelToolbar } from '../toolbar/ModelToolbar'
-import { Messages } from '../chat/Messages'
-import { Composer } from '../composer/Composer'
-import { EffectsLayer } from '../effects/EffectsLayer'
-import { SettingsModal } from '../settings/SettingsModal'
-import { SkillAppShell } from '../skillapps/SkillAppShell'
-import { ForgeBatchDock, ForgeBatchModal } from '../tools/ForgeBatchModal'
+import { useState } from "react";
+import { useAppStore } from "../../state/store";
+import { ProcessPanel } from "../process/ProcessPanel";
+import { SidePanel } from "../sidebar/SidePanel";
+import { ModelToolbar } from "../toolbar/ModelToolbar";
+import { Messages } from "../chat/Messages";
+import { Composer } from "../composer/Composer";
+import { EffectsLayer } from "../effects/EffectsLayer";
+import { SettingsModal } from "../settings/SettingsModal";
+import { SkillAppShell } from "../skillapps/SkillAppShell";
+import { ForgeBatchDock, ForgeBatchModal } from "../tools/ForgeBatchModal";
 
 export function AppShell() {
-  const feed = useAppStore((s) => s.feed)
+  const feed = useAppStore((s) => s.feed);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="app-shell">
@@ -23,7 +25,17 @@ export function AppShell() {
             <Composer />
           </div>
         </div>
-        <SidePanel />
+        <button
+          type="button"
+          className="sidebar-toggle"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          aria-label={sidebarOpen ? "Close menu" : "Open menu"}
+        >
+          {sidebarOpen ? "✕" : "☰"}
+        </button>
+        <div className={`sidebar-wrapper${sidebarOpen ? " open" : ""}`}>
+          <SidePanel />
+        </div>
       </div>
       <EffectsLayer />
       <SkillAppShell />
@@ -31,5 +43,5 @@ export function AppShell() {
       <ForgeBatchModal />
       <ForgeBatchDock />
     </div>
-  )
+  );
 }
