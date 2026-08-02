@@ -9,6 +9,11 @@ model_list:
       model: openai/deepseek-v4-flash-free
       api_key: os.environ/OPENCODE_API_KEY
       api_base: https://opencode.ai/zen/v1
+  - model_name: openai/ling-3.0-flash-free
+    litellm_params:
+      model: openai/ling-3.0-flash-free
+      api_key: os.environ/OPENCODE_API_KEY
+      api_base: https://opencode.ai/zen/v1
   - model_name: nvidia/nemotron-3-super-120b-a12b
     litellm_params:
       model: openai/nvidia/nemotron-3-super-120b-a12b
@@ -19,41 +24,14 @@ model_list:
       model: openai/nvidia/nemotron-3-nano-30b-a3b
       api_key: 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
       api_base: https://integrate.api.nvidia.com/v1
-  - model_name: openrouter/hermes-4-70b
-    litellm_params:
-      model: openrouter/nousresearch/hermes-4-70b
-      api_key: os.environ/OPENROUTER_API_KEY
-  - model_name: openrouter/hermes-4-405b
-    litellm_params:
-      model: openrouter/nousresearch/hermes-4-405b
-      api_key: os.environ/OPENROUTER_API_KEY
-  - model_name: openrouter/hermes-3-70b
-    litellm_params:
-      model: openrouter/nousresearch/hermes-3-llama-3.1-70b
-      api_key: os.environ/OPENROUTER_API_KEY
-  - model_name: openrouter/hermes-3-405b
-    litellm_params:
-      model: openrouter/nousresearch/hermes-3-llama-3.1-405b
-      api_key: os.environ/OPENROUTER_API_KEY
-  - model_name: openrouter/glm-5.2
-    litellm_params:
-      model: openrouter/z-ai/glm-5.2
-      api_key: os.environ/OPENROUTER_API_KEY
-  - model_name: openrouter/qwen3.7-max
-    litellm_params:
-      model: openrouter/qwen/qwen3.7-max
-      api_key: os.environ/OPENROUTER_API_KEY
-  - model_name: openrouter/deepseek-v3
-    litellm_params:
-      model: openrouter/deepseek/deepseek-chat-v3-0324
-      api_key: os.environ/OPENROUTER_API_KEY
-  - model_name: openrouter/llama-3.3-70b
-    litellm_params:
-      model: openrouter/meta-llama/llama-3.3-70b-instruct
-      api_key: os.environ/OPENROUTER_API_KEY
 
 litellm_settings:
   drop_params: true
+  fallbacks:
+    - openai/mimo-v2.5-free:
+        - openai/deepseek-v4-flash-free
+        - openai/ling-3.0-flash-free
+        - nvidia/nemotron-3-nano-30b-a3b
 
 general_settings:
   master_key: os.environ/LITELLM_MASTER_KEY

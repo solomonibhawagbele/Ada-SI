@@ -3874,3 +3874,51 @@ button:disabled {
     height: 100%;
   }
 }
+
+/* Fix composer visibility on mobile */
+@media (max-width: 1100px) {
+  .app-shell-content {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .main-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .chat-surface {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .messages-wrap {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+  }
+
+  .composer {
+    flex-shrink: 0;
+    border-top: 1px solid var(--glass-border);
+    background: var(--bg-primary, #0d1117);
+    padding: 0.5rem;
+    z-index: 10;
+  }
+
+  .composer textarea {
+    min-height: 44px;
+  }
+
+  .process-panel {
+    max-height: 150px;
+  }
+}
