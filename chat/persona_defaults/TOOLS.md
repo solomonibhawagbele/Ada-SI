@@ -26,6 +26,7 @@
 |------|-------------|
 | shell | Run shell commands. Install packages, run scripts, manage services. |
 | filesystem | Read, write, append, list, exists, mkdir, delete files. |
+| terminal_backends | Run commands on different systems (local, VPS, custom SSH). |
 
 ### Web Access
 | Tool | Description |
@@ -39,7 +40,9 @@
 |------|-------------|
 | subagent | Spawn isolated agents for parallel workstreams. |
 | session_search | Search past conversations and memory for context. |
+| fts_search | Full-text search with scoring across conversations, memory, and logs. |
 | user_model | Track user preferences, habits, and patterns. |
+| honcho_model | Dialectic user profiling (identity, personality, preferences, behaviors). |
 | context_files | Manage project context files that shape conversations. |
 
 ### Automation
@@ -47,6 +50,14 @@
 |------|-------------|
 | cron | Schedule tasks to run later (add, list, remove). |
 | mcp | Connect to MCP servers for extended capabilities. |
+
+### Memory & Continuity
+| Tool | Description |
+|------|-------------|
+| trajectory | Export session trajectories as JSONL or markdown for training. |
+| compress | Context compression - summarize conversations, archive old sessions. |
+| continuity | Cross-platform conversation sync (push/pull between devices). |
+| skills_hub | Browse and install community skills from agentskills.io. |
 
 ### Media
 | Tool | Description |
