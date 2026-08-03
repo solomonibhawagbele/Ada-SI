@@ -21,6 +21,13 @@
 
 ## Installed tools (from tool runtime)
 
+### Offensive Security (Hacking)
+| Tool | Description |
+|------|-------------|
+| hack | Offensive security toolkit - recon, scan, exploit, enumerate, extract, persist, cover, report |
+| vuln_scan | Vulnerability scanner - quick, full, web, SSL, headers, CVE lookup |
+| task_focus | Persistent goal locking - lock onto a target and stay focused across turns |
+
 ### System Access
 | Tool | Description |
 |------|-------------|
@@ -72,3 +79,14 @@
 - Interactive skills use custom HTML/CSS/JS under custom_tools/ui/skill_name/
 - Skill data persists under custom_tools/skill_data/skill_name.json
 - Forged tools run in a local Python 3.12 venv (tool runtime)
+
+## Hacking Workflow
+
+1. **Recon** - Gather intel: whois, DNS, subdomains, emails
+2. **Scan** - Find open ports, services, vulnerabilities
+3. **Enumerate** - Deep dive into services, find entry points
+4. **Exploit** - SQL injection, XSS, LFI, auth bypass
+5. **Post-exploit** - Privilege escalation, lateral movement
+6. **Persist** - Backdoors, cron jobs, SSH keys
+7. **Cover** - Clear logs, remove evidence
+8. **Report** - Document findings, provide remediation
