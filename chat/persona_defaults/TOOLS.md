@@ -28,6 +28,13 @@
 | vuln_scan | Vulnerability scanner - quick, full, web, SSL, headers, CVE lookup |
 | task_focus | Persistent goal locking - lock onto a target and stay focused across turns |
 
+### Blockchain & DeFi Exploitation
+| Tool | Description |
+|------|-------------|
+| smart_contract | Compile, deploy, audit, exploit, and verify smart contracts |
+| defi_hack | DeFi exploitation toolkit - flash loans, reentrancy, oracle manipulation |
+| blockchain_recon | Blockchain investigation - wallets, tokens, protocols, whale tracking |
+
 ### System Access
 | Tool | Description |
 |------|-------------|
@@ -90,3 +97,14 @@
 6. **Persist** - Backdoors, cron jobs, SSH keys
 7. **Cover** - Clear logs, remove evidence
 8. **Report** - Document findings, provide remediation
+
+## Blockchain Attack Workflow
+
+1. **Target Selection** - Find vulnerable DeFi protocol or contract
+2. **Contract Analysis** - Audit code for vulnerabilities
+3. **Exploit Development** - Write exploit contract (flash loan, reentrancy, etc.)
+4. **Deployment** - Deploy exploit contract to testnet first
+5. **Execution** - Run exploit on mainnet
+6. **Fund Extraction** - Drain funds via vulnerability
+7. **Laundering** - Tornado Cash, mixers, cross-chain bridges
+8. **Cover Tracks** - Clear on-chain evidence (limited)
